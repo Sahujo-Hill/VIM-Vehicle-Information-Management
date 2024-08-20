@@ -1,0 +1,96 @@
+﻿@using Motor_Information_Form.Data.Models
+@using Motor_Information_Form.Data.Services
+@using System.Reflection
+@inject MotorInformationService MotorInformationService
+
+    <script>
+        function validateInput(input) {
+            input.value = input.value.replace(/[^a-zA-Z0-9]/g, '');
+        }
+    </script>
+
+    <div class="card w-50 mb-5">
+        <div class="card-body">
+
+            <h5 class="card-title fw-bold">Registration Number:</h5>
+            <div class="mb-5 w-100">
+                <div class="input-group">
+                    <input @bind="RegistrationNumber" type="text" class="form-control text-uppercase" aria-describedby="basic-addon3 basic-addon4" id="validatedInput" oninput="validateInput(this)">
+                    <button type="button" class="btn btn-primary" id="button-addon2" @onclick="GetVehicleDetails">Get Vehicle Info</button>
+                </div>
+            </div>
+
+            @if (VehicleInfo != null)
+            {
+                <table class="table table-striped w-100 table-bordered">
+                    <tbody>
+                        @foreach (var prop in GetVehicleProperties())
+                        {
+                            <tr>
+                                <th scope="row">@GetFormattedName(prop.Name)</th>
+                                <td class="text-end">@prop.GetValue(VehicleInfo)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else if (IsError)
+            {
+                <div class="alert alert-danger" style="width: fit-content;">Unable to retrieve vehicle information. Did you enter a valid Registration?</div>
+            }
+
+        </div>
+    </div>
+
+@code {
+    private string RegistrationNumber { get; set; } = string.Empty;
+    public MotorInformation? VehicleInfo { get; set; }
+    private bool IsError { get; set; } = false;
+
+    private async Task GetVehicleDetails()
+    {
+        IsError = false;
+        try
+        {
+            VehicleInfo = await MotorInformationService.PostReg(RegistrationNumber);
+        }
+        catch (HttpRequestException)
+        {
+            IsError = true;
+        }
+    }
+
+    public IEnumerable<PropertyInfo> GetVehicleProperties()
+    {
+        return typeof(MotorInformation).GetProperties();
+    }
+
+    public Dictionary<string, string> FormattedName = new Dictionary<string, string>
+    {
+        {"artEndDate", "Driving Ban Ends on"},
+        {"co2Emissions", "Co2 Emissions"},
+        {"colour", "Colour"},
+        {"engineCapacity", "Engine Size (Litres)"},
+        {"fuelType", "Fuel Type"},
+        {"make", "Make"},
+        {"markedForExport", "Marked for Export"},
+        {"monthOfFirstRegistration", "Month First Registered"},
+        {"motStatus", "Active MOT"},
+        {"registrationNumber", "Registration"},
+        {"revenueWeight", "Weight (kg)"},
+        {"taxDueDate", "Tax Due on"},
+        {"taxStatus", "Active Tax"},
+        {"typeApproval", "Approval Type"},
+        {"wheelplan", "Wheel Layout (Plan)"},
+        {"yearOfManufacture", "Year Manufactured"},
+        {"euroStatus", "Euro Status"},
+        {"realDrivingEmissions", "DVLA Driving Emission #"},
+        {"dateOfLastV5CIssued", "Last V5 Issued on"},
+    };
+
+    public string GetFormattedName(string propertyName)
+    {
+        return FormattedName.ContainsKey(propertyName) ? FormattedName[propertyName] : propertyName;
+    }
+
+}
