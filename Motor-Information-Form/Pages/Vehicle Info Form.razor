@@ -1,11 +1,198 @@
 ﻿@page "/VIForm"
 @using Motor_Information_Form.Data.Models
 @using Motor_Information_Form.Data.Services
+@using Motor_Information_Form.Pages
 @inject MotorInformationService MotorInformationService
 
-<h1 class="h1">Test VIForm Page Header</h1>
+<div class="container">
+    <div class="card mb-5">
+
+        <div class="card-header">
+            <h1 class="h1">Vi-Form</h1>
+        </div>
+
+        <div class="card-body">
+
+
+            <form>
+
+                <label for="registrationNumber" class="form-label">Registration Number</label>
+                <div class="input-group pb-5">
+                    <input @bind="RegistrationNumber" type="text" class="form-control text-uppercase" aria-describedby="basic-addon3 basic-addon4" id="validatedInput" oninput="validateInput(this)">
+                    <button type="button" class="btn btn-primary" id="button-addon2" @onclick="GetVehicleDetails">Get Vehicle Info</button>
+                </div>
+
+                @if (VehicleInfo == null)
+                {
+                    <div class="mb-3">
+                        <label for="make" class="form-label">Make</label>
+                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Renault">
+                    </div>
+                    <div class="mb-3">
+                        <label for="model" class="form-label">Model</label>
+                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Clio">
+                    </div>
+                    <div class="mb-3">
+                        <label for="bodyColour" class="form-label">Body Colour</label>
+                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Black">
+                    </div>
+                    <div class="mb-3">
+                        <label for="wheelColour" class="form-label">Wheel Colour</label>
+                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Chrome Alloy">
+                    </div>
+                    <div class="mb-3">
+                        <label for="weight" class="form-label">Weight (kg)</label>
+                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="1000">
+                    </div>
+                    <div class="mb-3">
+                        <label for="wheelLayout" class="form-label">Wheel Layout</label>
+                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="4 Axle Rigid Body (AWD)">
+                    </div>
+                    <div class="mb-3">
+                        <label for="yearManufactured" class="form-label">Year of Manufacture</label>
+                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="2009">
+                    </div>
+                    <div class="mb-3">
+                        <label for="activeTax" class="form-label">Is the Vehicle Taxed?</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" checked>
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault">
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                }
+                else if (VehicleInfo != null)
+                {
+                    <div class="mb-3">
+                        <label for="make" class="form-label">Make</label>
+                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Renault" @bind="VehicleInfo.make">
+                    </div>
+                    <div class="mb-3">
+                        <label for="model" class="form-label">Model</label>
+                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Clio">
+                    </div>
+                    <div class="mb-3">
+                        <label for="bodyColour" class="form-label">Body Colour</label>
+                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Black" @bind="VehicleInfo.colour">
+                    </div>
+                    <div class="mb-3">
+                        <label for="wheelColour" class="form-label">Wheel Colour</label>
+                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Chrome Alloy">
+                    </div>
+                    <div class="mb-3">
+                        <label for="weight" class="form-label">Weight (kg)</label>
+                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="1000" @bind="VehicleInfo.revenueWeight">
+                    </div>
+                    <div class="mb-3">
+                        <label for="wheelLayout" class="form-label">Wheel Layout</label>
+                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="4 Axle Rigid Body (AWD)" @bind="VehicleInfo.wheelplan">
+                    </div>
+                    <div class="mb-3">
+                        <label for="yearManufactured" class="form-label">Year of Manufacture</label>
+                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="2009" @bind="VehicleInfo.yearOfManufacture">
+                    </div>
+
+                    @if (vehicleTaxed())
+                    {
+                        <div class="mb-3">
+                            <label for="activeTax" class="form-label">Is the Vehicle Taxed?</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" checked disabled>
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                    Yes
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" disabled>
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                    No
+                                </label>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mb-3">
+                            <label for="activeTax" class="form-label">Is the Vehicle Taxed?</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" disabled>
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                    Yes
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" checked disabled>
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                    No
+                                </label>
+                            </div>
+                        </div>
+                    }
+
+                }
+                else if (IsError == true)
+                {
+                    <div class="alert alert-danger" style="width: fit-content;">Unable to retrieve vehicle information. Did you enter a valid Registration?</div>
+                }
+
+
+
+            </form>
+        </div>
+    </div>
+    @if (VehicleInfo != null)
+    {
+        <div>
+            <button class="btn btn-danger" @onclick="clearVehicleData">Clear Data</button>
+        </div>
+
+    }
+</div>
+
+
+
 
 
 @code {
+    public int vehicleAmount { get; set; }
+    public string RegistrationNumber { get; set; } = string.Empty;
+    public MotorInformation? VehicleInfo { get; set; }
+    private bool IsError { get; set; }
+
+    public async Task GetVehicleDetails()
+    {
+        IsError = false;
+        try
+        {
+            VehicleInfo = await MotorInformationService.PostReg(RegistrationNumber);
+        }
+        catch (HttpRequestException)
+        {
+            IsError = true;
+        }
+    }
+    public void clearVehicleData()
+    {
+        VehicleInfo = null;
+    }
+
+    public bool vehicleTaxed()
+    {
+        if (VehicleInfo.taxStatus == "Taxed")
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
 }

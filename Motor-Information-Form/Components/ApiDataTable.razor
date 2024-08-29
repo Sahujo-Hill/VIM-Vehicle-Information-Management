@@ -9,9 +9,13 @@
         }
     </script>
 
-    <div class="card w-50 mb-5">
-        <div class="card-body">
+    <div class="card mb-5">
 
+        <div class="card-header">
+            <h1 class="h1">V-Registration Lookup</h1>
+        </div>
+
+        <div class="card-body">
             <h5 class="card-title fw-bold">Registration Number:</h5>
             <div class="mb-5 w-100">
                 <div class="input-group">
@@ -33,6 +37,9 @@
                         }
                     </tbody>
                 </table>
+
+            <button class="btn btn-danger" @onclick="clearVehicleData">Clear Data</button>
+
             }
             else if (IsError)
             {
@@ -43,11 +50,11 @@
     </div>
 
 @code {
-    private string RegistrationNumber { get; set; } = string.Empty;
+    public string RegistrationNumber { get; set; } = string.Empty;
     public MotorInformation? VehicleInfo { get; set; }
     private bool IsError { get; set; } = false;
 
-    private async Task GetVehicleDetails()
+    public async Task GetVehicleDetails()
     {
         IsError = false;
         try
@@ -91,6 +98,11 @@
     public string GetFormattedName(string propertyName)
     {
         return FormattedName.ContainsKey(propertyName) ? FormattedName[propertyName] : propertyName;
+    }
+
+    public void clearVehicleData()
+    {
+        VehicleInfo = null;
     }
 
 }
