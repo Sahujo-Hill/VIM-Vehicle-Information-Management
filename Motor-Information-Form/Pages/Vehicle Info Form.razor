@@ -14,13 +14,20 @@
         <div class="card-body">
 
 
-            <form>
+            <form class="needs-validation">
 
-                <label for="registrationNumber" class="form-label">Registration Number</label>
-                <div class="input-group pb-5">
-                    <input @bind="RegistrationNumber" type="text" class="form-control text-uppercase" aria-describedby="basic-addon3 basic-addon4" id="validatedInput" oninput="validateInput(this)">
-                    <button type="button" class="btn btn-primary" id="button-addon2" @onclick="GetVehicleDetails">Get Vehicle Info</button>
+                <div class="mb-3">
+                    <label for="registrationNumber" class="form-label">Registration Number</label>
+                    <div class="input-group">
+                        <input required @bind="RegistrationNumber" type="text" class="form-control text-uppercase" aria-describedby="basic-addon3 basic-addon4" id="validatedInput" oninput="validateInput(this)">
+                        <button type="button" class="btn btn-primary" id="button-addon2" @onclick="GetVehicleDetails">Get Vehicle Info</button>
+                    </div>
                 </div>
+
+                @if (IsError)
+                {
+                    <div class="alert alert-danger" style="width: fit-content;">Unable to retrieve vehicle information. Did you enter a valid Registration?</div>
+                }
 
                 @if (VehicleInfo == null)
                 {
@@ -137,23 +144,24 @@
                     }
 
                 }
-                else if (IsError == true)
-                {
-                    <div class="alert alert-danger" style="width: fit-content;">Unable to retrieve vehicle information. Did you enter a valid Registration?</div>
-                }
 
 
+                <div>
+                    <button type="submit" class="btn btn-success float-end">Submit</button>
+
+                    @if (VehicleInfo != null)
+                    {
+                        <div>
+                            <button type="reset" class="btn btn-danger float-end me-3" @onclick="clearVehicleData">Clear Data</button>
+                        </div>
+
+                    }
+                </div>
 
             </form>
         </div>
     </div>
-    @if (VehicleInfo != null)
-    {
-        <div>
-            <button class="btn btn-danger" @onclick="clearVehicleData">Clear Data</button>
-        </div>
 
-    }
 </div>
 
 
@@ -164,7 +172,7 @@
     public int vehicleAmount { get; set; }
     public string RegistrationNumber { get; set; } = string.Empty;
     public MotorInformation? VehicleInfo { get; set; }
-    private bool IsError { get; set; }
+    public bool IsError { get; set; }
 
     public async Task GetVehicleDetails()
     {
