@@ -12,15 +12,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MotorFormTests
 {
-    public class RenderComp : TestContext
+    public class RenderCompTest : TestContext
     {
         [Fact]
         public void RenderApiDataTable()
         {
-            using var ctx = new RenderComp();
+            using var ctx = new RenderCompTest();
 
             string apiKey = "af0slhpNP42RKT9JNvHo2775PCqtZnJZkTUwQHj7";
-
             ctx.Services.AddSingleton(sp => new MotorInformationService(apiKey));
 
             var apiDataTable = ctx.RenderComponent<ApiDataTable>();
@@ -29,13 +28,23 @@ namespace MotorFormTests
         [Fact]
         public void RenderRegLookup()
         {
-            using var ctx = new RenderComp();
+            using var ctx = new RenderCompTest();
 
             string apiKey = "af0slhpNP42RKT9JNvHo2775PCqtZnJZkTUwQHj7";
-
             ctx.Services.AddSingleton(sp => new MotorInformationService(apiKey));
 
             var regLookup = ctx.RenderComponent<Reg_Lookup>();
+        }
+
+        [Fact]
+        public void RenderMotorForm()
+        {
+            using var ctx = new RenderCompTest();
+
+            string apiKey = "af0slhpNP42RKT9JNvHo2775PCqtZnJZkTUwQHj7";
+            ctx.Services.AddSingleton(sp => new MotorInformationService(apiKey));
+
+            var regLookup = ctx.RenderComponent<Vehicle_Info_Form>();
         }
     }
 }

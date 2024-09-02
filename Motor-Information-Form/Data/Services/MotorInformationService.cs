@@ -23,7 +23,7 @@ namespace Motor_Information_Form.Data.Services
             _httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
         }
 
-        public async Task<MotorInformation> PostReg(string registrationNumber)
+        public virtual async Task<MotorInformation> PostReg(string registrationNumber)
         {
             var requestBody = new { registrationNumber = registrationNumber };
             var response = await _httpClient.PostAsJsonAsync(string.Empty, requestBody);
